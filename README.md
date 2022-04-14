@@ -1,16 +1,5 @@
 # README
 
-**WARNING**: The service-template is currently incompatible with Keptn 0.14.x and newer.
-
-**BEFORE YOU START**, please be aware that there are more ways to integrate with your service that don't require creating a service from this template, see https://keptn.sh/docs/0.10.x/integrations/how_integrate/ for more details.
-
-Examples:
-
-* Webhooks: https://keptn.sh/docs/0.10.x/integrations/webhooks/
-* Job-Executor-Service: https://github.com/keptn-sandbox/job-executor-service
-
----
-
 This is a Keptn Service Template written in GoLang. Follow the instructions below for writing your own Keptn integration.
 
 Quick start:
@@ -21,63 +10,7 @@ Quick start:
 1. Figure out whether your Kubernetes Deployment requires [any RBAC rules or a different service-account](https://github.com/keptn-sandbox/contributing#rbac-guidelines), and adapt [chart/templates/serviceaccount.yaml](chart/templates/serviceaccount.yaml) accordingly for the roles.
 1. Last but not least: Remove this intro within the README file and make sure the README file properly states what this repository is about
 
----
-
-# keptn-ortelius-service
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/keptn-sandbox/keptn-ortelius-service)
-[![Go Report Card](https://goreportcard.com/badge/github.com/keptn-sandbox/keptn-ortelius-service)](https://goreportcard.com/report/github.com/keptn-sandbox/keptn-ortelius-service)
-
-This implements a keptn-ortelius-service for Keptn. If you want to learn more about Keptn visit us on [keptn.sh](https://keptn.sh)
-
-## Compatibility Matrix
-
-*Please fill in your versions accordingly*
-
-| Keptn Version    | [keptn-ortelius-service Docker Image](https://hub.docker.com/r/keptn-sandbox/keptn-ortelius-service/tags) |
-|:----------------:|:----------------------------------------:|
-|       0.6.1      | keptn-sandbox/keptn-ortelius-service:0.1.0 |
-|       0.7.1      | keptn-sandbox/keptn-ortelius-service:0.1.1 |
-|       0.7.2      | keptn-sandbox/keptn-ortelius-service:0.1.2 |
-
-## Installation
-
-The *keptn-ortelius-service* can be installed as a part of [Keptn's uniform](https://keptn.sh).
-
-### Deploy in your Kubernetes cluster
-
-To deploy the current version of the *keptn-ortelius-service* in your Keptn Kubernetes cluster use the [`helm chart`](chart/Chart.yaml) file,
-for example:
-
-```console
-helm install -n keptn keptn-ortelius-service chart/
-```
-
-This should install the `keptn-ortelius-service` together with a Keptn `distributor` into the `keptn` namespace, which you can verify using
-
-```console
-kubectl -n keptn get deployment keptn-ortelius-service -o wide
-kubectl -n keptn get pods -l run=keptn-ortelius-service
-```
-
-### Up- or Downgrading
-
-Adapt and use the following command in case you want to up- or downgrade your installed version (specified by the `$VERSION` placeholder):
-
-```console
-helm upgrade -n keptn --set image.tag=$VERSION keptn-ortelius-service chart/
-```
-
-### Uninstall
-
-To delete a deployed *keptn-ortelius-service*, use the file `deploy/*.yaml` files from this repository and delete the Kubernetes resources:
-
-```console
-helm uninstall -n keptn keptn-ortelius-service
-```
-
 ## Development
-
-Development can be conducted using any GoLang compatible IDE/editor (e.g., Jetbrains GoLand, VSCode with Go plugins).
 
 It is recommended to make use of branches as follows:
 
@@ -104,9 +37,9 @@ If you want to get more insights into processing those CloudEvents or even defin
 
 * Build the binary: `go build -ldflags '-linkmode=external' -v -o keptn-ortelius-service`
 * Run tests: `go test -race -v ./...`
-* Build the docker image: `docker build . -t keptn-sandbox/keptn-ortelius-service:dev` (Note: Ensure that you use the correct DockerHub account/organization)
-* Run the docker image locally: `docker run --rm -it -p 8080:8080 keptn-sandbox/keptn-ortelius-service:dev`
-* Push the docker image to DockerHub: `docker push keptn-sandbox/keptn-ortelius-service:dev` (Note: Ensure that you use the correct DockerHub account/organization)
+* Build the docker image: `docker build . -t bradmccoydev/keptn-ortelius-service:dev` (Note: Ensure that you use the correct DockerHub account/organization)
+* Run the docker image locally: `docker run --rm -it -p 8080:8080 bradmccoydev/keptn-ortelius-service:dev`
+* Push the docker image to DockerHub: `docker push bradmccoydev/keptn-ortelius-service:dev` (Note: Ensure that you use the correct DockerHub account/organization)
 * Deploy the service using `kubectl`: `kubectl apply -f deploy/`
 * Delete/undeploy the service using `kubectl`: `kubectl delete -f deploy/`
 * Watch the deployment using `kubectl`: `kubectl -n keptn get deployment keptn-ortelius-service -o wide`

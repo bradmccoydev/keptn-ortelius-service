@@ -5,7 +5,7 @@ on:
     # paths:
     # - 'chart/**'
     branches:
-      - master
+      - main
 
 jobs:
   release:
