@@ -74,13 +74,6 @@ Docker Images are automatically pushed based on the configuration done in [.ci_e
 * `REGISTRY_USER` - your DockerHub username
 * `REGISTRY_PASSWORD` - a DockerHub [access token](https://hub.docker.com/settings/security) (alternatively, your DockerHub password)
 
-## How to release a new version of this service
-
-It is assumed that the current development takes place in the `main`/`master` branch (either via Pull Requests or directly).
-
-Once you're ready, go to the Actions tab on GitHub, select Pre-Release or Release, and run the action.
-
-
 ## License
 
 Please find more information in the [LICENSE](LICENSE) file.
