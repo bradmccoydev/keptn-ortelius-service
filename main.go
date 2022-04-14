@@ -10,13 +10,18 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
-	cloudevents "github.com/cloudevents/sdk-go/v2" // make sure to use v2 cloudevents here
+	cloudevents "github.com/cloudevents/sdk-go/v2"
 	"github.com/kelseyhightower/envconfig"
 	keptnlib "github.com/keptn/go-utils/pkg/lib"
 	keptn "github.com/keptn/go-utils/pkg/lib/keptn"
 	keptnv2 "github.com/keptn/go-utils/pkg/lib/v0_2_0"
 )
+
+type CatalogTriggeredEventData struct {
+	keptnv2.EventData
+}
 
 var keptnOptions = keptn.KeptnOpts{}
 
@@ -458,18 +463,41 @@ func processKeptnCloudEvent(ctx context.Context, event cloudevents.Event) error 
 		return GenericLogKeptnCloudEventHandler(myKeptn, event, eventData)
 
 	// -------------------------------------------------------
-	// your custom cloud event, e.g., sh.keptn.your-event
+	// your custom cloud event, e.g., sh.keptn.catalog
 	// see https://github.com/keptn-sandbox/echo-service/blob/a90207bc119c0aca18368985c7bb80dea47309e9/pkg/events.go
 	// for an example on how to generate your own CloudEvents and structs
-	case keptnv2.GetTriggeredEventType("your-event"): // sh.keptn.event.your-event.triggered
-		log.Printf("Processing your-event.triggered Event")
+	case keptnv2.GetTriggeredEventType("catalog"): // sh.keptn.event.catalog.triggered
+		log.Printf("Processing catalog.triggered Event")
 
-		// eventData := &keptnv2.YourEventTriggeredEventData{}
-		//  parseKeptnCloudEventPayload(event, eventData)
+		eventData := CatalogTriggeredEventData{}
+		parseKeptnCloudEventPayload(event, eventData)
+
+		// -----------------------------------------------------
+		// 1. Send Action.Started Cloud-Event
+		// -----------------------------------------------------
+		myKeptn.SendTaskStartedEvent(&keptnv2.EventData{
+			Status:  keptnv2.StatusSucceeded, // alternative: keptnv2.StatusErrored
+			Result:  keptnv2.ResultPass,      // alternative: keptnv2.ResultFailed
+			Message: "Successfully started!",
+		}, ServiceName)
+
+		// -----------------------------------------------------
+		// 2. Implement your remediation action here
+		// -----------------------------------------------------
+		time.Sleep(5 * time.Second) // Example: Wait 5 seconds. Maybe the problem fixes itself.
+
+		// -----------------------------------------------------
+		// 3. Send Action.Finished Cloud-Event
+		// -----------------------------------------------------
+		myKeptn.SendTaskFinishedEvent(&keptnv2.EventData{
+			Status:  keptnv2.StatusSucceeded, // alternative: keptnv2.StatusErrored
+			Result:  keptnv2.ResultPass,      // alternative: keptnv2.ResultFailed
+			Message: "Successfully sleeped!",
+		}, ServiceName)
 
 		break
-	case keptnv2.GetStartedEventType(keptnv2.ConfigureMonitoringTaskName): // sh.keptn.event.your-event.started
-		log.Printf("Processing your-event.started Event")
+	case keptnv2.GetStartedEventType(keptnv2.ConfigureMonitoringTaskName): // sh.keptn.event.catalog.started
+		log.Printf("Processing catalog.started Event")
 
 		// eventData := &keptnv2.YourEventStartedEventData{}
 		// parseKeptnCloudEventPayload(event, eventData)
@@ -478,8 +506,8 @@ func processKeptnCloudEvent(ctx context.Context, event cloudevents.Event) error 
 		// return GenericLogKeptnCloudEventHandler(myKeptn, event, eventData)
 
 		break
-	case keptnv2.GetFinishedEventType(keptnv2.ConfigureMonitoringTaskName): // sh.keptn.event.your-event.finished
-		log.Printf("Processing your-event.finished Event")
+	case keptnv2.GetFinishedEventType(keptnv2.ConfigureMonitoringTaskName): // sh.keptn.event.catalog.finished
+		log.Printf("Processing catalog.finished Event")
 
 		// eventData := &keptnv2.YourEventFinishedEventData{}
 		// parseKeptnCloudEventPayload(event, eventData)
